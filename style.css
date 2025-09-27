@@ -1,0 +1,47 @@
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(47, 45, 45); /* fundo branco */
+}
+
+#guitarra {
+  width: 250px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  
+  /* sombra em volta da silhueta da guitarra */
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+}
+
+/* Efeito de "pressionar" quando clica */
+#guitarra:active {
+  transform: scale(0.9);
+}
+
+#play-icon {
+  position: absolute;
+  font-size: 80px;
+  color: black;
+  opacity: 0;
+  transition: opacity 1s ease-out;
+  pointer-events: none; /* não atrapalha cliques */
+}
+
+#play-icon,
+#pause-icon {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  font-size: 96px;
+  color: rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  transition: opacity 0.4s ease-out, transform 0.1s ease-out;
+  pointer-events: none;
+  z-index: 9999;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  user-select: none;
+}
