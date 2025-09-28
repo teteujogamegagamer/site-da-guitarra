@@ -149,5 +149,69 @@ som.addEventListener("ended", () => {
   updateProgress(); // completa barra
 });
 
+// Atalhos de teclado
+document.addEventListener("keydown", (e) => {
+  // Reinicia música no 0:00 (tecla 0 ou Insert)
+  if (e.code === "Digit0" || e.code === "Insert") {
+    som.currentTime = 0;          // volta pro início
+    updateProgress();             // atualiza barra
+    if (som.paused) {
+      fire.style.opacity = "0";   // se estiver pausado, fogo some
+    } else {
+      updateFire(som.volume);     // se estiver tocando, atualiza fogo
+    }
+  }
+
+  // Alterna play/pause (tecla K)
+  if (e.code === "KeyK") {
+    if (som.paused) {
+      som.play().catch(err => console.log("Erro música:", err));
+      showIcon(playIcon);      // mostra ícone de play
+      playEffect(block1);      // efeito de ligar
+      updateFire(som.volume);
+      startProgress();
+    } else {
+      som.pause();
+      showIcon(pauseIcon);     // mostra ícone de pause
+      playEffect(block2);      // efeito de desligar
+      fire.style.opacity = "0";
+      stopProgress();
+    }
+  }
+});
+
+// Alternar contraste (claro/escuro)
+const contrastBtn = document.getElementById("contrast-toggle");
+
+contrastBtn.addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+});
+
+
+
+const settingsToggle = document.getElementById("settings-toggle");
+const settingsMenu = document.getElementById("settings-menu");
+const settingsOverlay = document.getElementById("settings-overlay");
+
+// Abre e fecha o menu ao clicar na engrenagem
+settingsToggle.addEventListener("click", () => {
+  settingsMenu.classList.toggle("active");
+  settingsOverlay.classList.toggle("active");
+});
+
+// Fecha o menu ao clicar no fundo escurecido
+settingsOverlay.addEventListener("click", () => {
+  settingsMenu.classList.remove("active");
+  settingsOverlay.classList.remove("active");
+});
+
+// Fecha com ESC
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    settingsMenu.classList.remove("active");
+    settingsOverlay.classList.remove("active");
+  }
+});
+
 // Impede que imagens sejam arrastadas
 document.querySelectorAll('img').forEach(img => img.ondragstart = () => false);
