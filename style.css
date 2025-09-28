@@ -4,44 +4,117 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(47, 45, 45); /* fundo branco */
+  background-color: rgb(47, 45, 45);
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.amp-container {
+  position: relative;
+  margin-right: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #guitarra {
   width: 250px;
   cursor: pointer;
   transition: transform 0.1s ease;
-  
-  /* sombra em volta da silhueta da guitarra */
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+  position: relative;
+  z-index: 2; /* acima do fogo */
 }
 
-/* Efeito de "pressionar" quando clica */
 #guitarra:active {
   transform: scale(0.9);
 }
 
-#play-icon {
+.guitar-container {
+  position: relative;
+}
+
+/* Fogo atrás da guitarra */
+#fire {
   position: absolute;
-  font-size: 80px;
-  color: black;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  width: 300px; /* ajuste conforme necessário */
+  height: auto;
   opacity: 0;
-  transition: opacity 1s ease-out;
-  pointer-events: none; /* não atrapalha cliques */
+  transition: opacity 0.6s ease-in; /* aparece gradualmente */
+  z-index: 1; /* atrás da guitarra */
 }
 
 #play-icon,
 #pause-icon {
-  position: fixed;
-  left: 50%;
+  position: absolute;
   top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%) scale(1);
   font-size: 96px;
-  color: rgba(0, 0, 0, 0.9);
+  color: rgba(0,0,0,0.9);
   opacity: 0;
   transition: opacity 0.4s ease-out, transform 0.1s ease-out;
   pointer-events: none;
   z-index: 9999;
   text-shadow: 0 2px 6px rgba(0,0,0,0.35);
   user-select: none;
+}
+
+#amp {
+  width: 180px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+
+#amp:active {
+  transform: scale(0.9);
+}
+
+#amp-on,
+#amp-off {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity 0.3s ease-out;
+  width: 120px;
+  height: auto;
+}
+
+/* Barrinha de volume sobre o amp, um pouco mais pra baixo */
+#amp-bar {
+  display: none;
+  position: absolute;
+  top: 12px; /* ajuste a distância do amp */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 10px;
+  background-color: black;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#amp-slider {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
 }
