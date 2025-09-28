@@ -131,6 +131,43 @@ body {
   cursor: pointer;
 }
 
+.progress-container {
+  position: absolute;
+  bottom: -70px; /* bem embaixo da guitarra e do amp */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  width: 60%; /* ajusta para o tamanho desejado */
+  font-family: "Tiny5", sans-serif;
+  color: white;
+  user-select: none;
+}
+
+#current-time,
+#total-time {
+  font-size: 14px;
+  width: 40px;
+  text-align: center;
+}
+
+#progress-bar {
+  flex: 1;
+  height: 6px;
+  background-color: rgba(255,255,255,0.3);
+  margin: 0 10px;
+  border-radius: 3px;
+  position: relative;
+}
+
+#progress-fill {
+  width: 0%;
+  height: 100%;
+  background-color: lime;
+  border-radius: 3px;
+  transition: width 0.1s linear;
+}
+
 img {
   user-select: none;
   -webkit-user-drag: none;
@@ -139,3 +176,4 @@ img {
   -o-user-drag: none;
   pointer-events: auto;
 }
+
