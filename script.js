@@ -16,8 +16,12 @@ const ampBar = document.getElementById("amp-bar");
 const ampSlider = document.getElementById("amp-slider");
 
 let ampToggle = true;
+let dragging = false;
+let progressInterval;
 
-// Função para mostrar ícone e sumir depois
+// ---------------- Funções gerais ----------------
+
+// Mostrar ícone de play/pause rapidamente
 function showIcon(icon) {
   icon.style.opacity = "1";
   icon.style.transform = "translate(-50%, -50%) scale(1.06)";
@@ -27,7 +31,7 @@ function showIcon(icon) {
   }, 600);
 }
 
-// Função para tocar efeito de bloco
+// Tocar efeito sonoro
 function playEffect(audioElement) {
   audioElement.currentTime = 0;
   audioElement.play().catch(err => console.log("Erro efeito:", err));
@@ -35,38 +39,40 @@ function playEffect(audioElement) {
 
 // Atualiza fogo de acordo com volume
 function updateFire(volume) {
-  if (volume === 0) {
-    fire.style.opacity = "0";
-  } else if (volume <= 0.5) {
-    fire.style.opacity = `${volume}`;
-  } else if (volume > 0.5 && volume <= 0.6) {
-    let mapped = (volume - 0.5) * 10;
-    fire.style.opacity = `${0.5 + mapped * 0.5}`;
-  } else {
-    fire.style.opacity = "1";
-  }
+  fire.style.opacity = volume;
 }
 
-// Clique na guitarra
-guitarra.addEventListener("click", () => {
-  if (som.paused) {
-    som.play().catch(err => console.log("Erro música:", err));
-    showIcon(playIcon);
-    playEffect(block1);
+// Formata tempo em mm:ss
+function formatTime(sec) {
+  const minutes = Math.floor(sec / 60);
+  const seconds = Math.floor(sec % 60);
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
 
-    fire.style.transition = "opacity 0.6s ease-in";
-    updateFire(som.volume);
-  } else {
-    som.pause();
-    showIcon(pauseIcon);
-    playEffect(block2);
+// ---------------- Volume do amplificador ----------------
+function setVolumeByPosition(clientX) {
+  const rect = ampBar.getBoundingClientRect();
+  const sliderWidth = ampSlider.offsetWidth;
+  
+  let leftPos = clientX - rect.left - sliderWidth / 2;
+  leftPos = Math.max(0, Math.min(leftPos, rect.width - sliderWidth));
+  
+  ampSlider.style.left = `${leftPos}px`;
+  
+  const percent = leftPos / (rect.width - sliderWidth);
+  som.volume = percent;
+  
+  if (!som.paused) updateFire(som.volume);
+}
 
-    fire.style.transition = "none";
-    fire.style.opacity = "0";
-    setTimeout(() => {
-      fire.style.transition = "opacity 0.6s ease-in";
-    }, 10);
-  }
+// Clique na barra
+ampBar.addEventListener("click", e => setVolumeByPosition(e.clientX));
+
+// Arrastar slider
+ampSlider.addEventListener("mousedown", () => dragging = true);
+document.addEventListener("mouseup", () => dragging = false);
+document.addEventListener("mousemove", e => {
+  if (dragging) setVolumeByPosition(e.clientX);
 });
 
 // Clique no amplificador
@@ -76,6 +82,11 @@ amp.addEventListener("click", () => {
     ampOn.style.opacity = "1";
     setTimeout(() => ampOn.style.opacity = "0", 300);
     ampControl.style.display = "flex";
+
+    // Ajusta slider ao mostrar a barra (reflete volume atual)
+    const barWidth = ampBar.offsetWidth;
+    const sliderWidth = ampSlider.offsetWidth;
+    ampSlider.style.left = `${som.volume * (barWidth - sliderWidth)}px`;
   } else {
     playEffect(block2);
     ampOff.style.opacity = "1";
@@ -85,44 +96,58 @@ amp.addEventListener("click", () => {
   ampToggle = !ampToggle;
 });
 
-// Inicializa volume no carregamento da página
+// Inicializa volume na página
 window.addEventListener("load", () => {
-  ampSlider.style.left = `0px`;
-  som.volume = 0;
-  fire.style.opacity = "0";
+  som.volume = 0.5; // meio
 });
 
-// Clique na barra de volume para definir posição e volume
-ampBar.addEventListener("click", e => {
-  const rect = ampBar.getBoundingClientRect();
-  const sliderWidth = ampSlider.offsetWidth;
-  const halfSlider = sliderWidth / 2;
+// ---------------- Barra de progresso ----------------
+const currentTimeEl = document.getElementById("current-time");
+const totalTimeEl = document.getElementById("total-time");
+const progressFill = document.getElementById("progress-fill");
 
-  // Posição do clique relativa à barra
-  let pos = e.clientX - rect.left;
+function updateProgress() {
+  const percent = (som.currentTime / som.duration) * 100;
+  progressFill.style.width = `${percent}%`;
+  currentTimeEl.textContent = formatTime(som.currentTime);
+}
 
-  // Calcula a posição left centralizada no clique
-  let leftPos = pos - halfSlider;
+function startProgress() {
+  if (progressInterval) clearInterval(progressInterval);
+  progressInterval = setInterval(updateProgress, 100);
+}
 
-  // Limita para que o slider possa sobressair metade no lado direito
-  leftPos = Math.max(-halfSlider, Math.min(leftPos, rect.width - halfSlider));
+function stopProgress() {
+  clearInterval(progressInterval);
+}
 
-  // Atualiza posição da bolinha
-  ampSlider.style.left = `${leftPos}px`;
+// Quando música carrega
+som.addEventListener("loadedmetadata", () => {
+  totalTimeEl.textContent = formatTime(som.duration);
+});
 
-  // Calcula o percentual baseado na posição do centro da bolinha
-  const centerPos = leftPos + halfSlider;
-  const percent = Math.min(1, centerPos / rect.width);
+// ---------------- Clique na guitarra ----------------
+guitarra.addEventListener("click", () => {
+  if (som.paused) {
+    som.play().catch(err => console.log("Erro música:", err));
+    showIcon(playIcon);
+    playEffect(block1);
+    updateFire(som.volume);
+    startProgress();
+  } else {
+    som.pause();
+    showIcon(pauseIcon);
+    playEffect(block2);
+    fire.style.opacity = "0";
+    stopProgress();
+  }
+});
 
-  // Volume diretamente proporcional (vai de 0 a 1 completo)
-  som.volume = percent;
-
-  // Atualiza fogo conforme volume
-  fire.style.transition = "opacity 0.3s ease-in-out";
-  updateFire(som.volume);
+// Reinicia barra quando música termina
+som.addEventListener("ended", () => {
+  stopProgress();
+  updateProgress(); // completa barra
 });
 
 // Impede que imagens sejam arrastadas
-document.querySelectorAll('img').forEach(img => {
-  img.ondragstart = () => false;
-});
+document.querySelectorAll('img').forEach(img => img.ondragstart = () => false);
