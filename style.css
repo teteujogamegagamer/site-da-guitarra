@@ -44,11 +44,11 @@ body {
   top: 50%;
   left: 60%;
   transform: translate(-50%, -50%);
-  width: 300px; /* ajuste conforme necessário */
+  width: 300px;
   height: auto;
   opacity: 0;
-  transition: opacity 0.6s ease-in; /* aparece gradualmente */
-  z-index: 1; /* atrás da guitarra */
+  transition: opacity 0.6s ease-in;
+  z-index: 1;
 }
 
 #play-icon,
@@ -93,14 +93,26 @@ body {
   height: auto;
 }
 
-/* Barrinha de volume sobre o amp, um pouco mais pra baixo */
-#amp-bar {
+/* Container da barra + label */
+.amp-control {
   display: none;
-  position: absolute;
-  top: 12px; /* ajuste a distância do amp */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 150px;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 5px;
+}
+
+#amp-label {
+  font-family: "Tiny5", sans-serif;
+  font-size: 14px;
+  color: white;
+  margin-right: 8px;
+  user-select: none;
+}
+
+/* Barrinha de volume */
+#amp-bar {
+  position: relative;
+  width: 120px;
   height: 10px;
   background-color: black;
   border-radius: 5px;
@@ -110,11 +122,20 @@ body {
 #amp-slider {
   width: 20px;
   height: 20px;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   border-radius: 50%;
   position: absolute;
   top: 50%;
-  left: 0%;
-  transform: translate(-50%, -50%);
+  left: 0;
+  transform: translateY(-50%); /* só centraliza verticalmente */
   cursor: pointer;
+}
+
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  pointer-events: auto;
 }
