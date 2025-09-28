@@ -11,6 +11,7 @@ const block2 = document.getElementById("block2");
 const amp = document.getElementById("amp");
 const ampOn = document.getElementById("amp-on");
 const ampOff = document.getElementById("amp-off");
+const ampControl = document.querySelector(".amp-control");
 const ampBar = document.getElementById("amp-bar");
 const ampSlider = document.getElementById("amp-slider");
 
@@ -32,6 +33,20 @@ function playEffect(audioElement) {
   audioElement.play().catch(err => console.log("Erro efeito:", err));
 }
 
+// Atualiza fogo de acordo com volume
+function updateFire(volume) {
+  if (volume === 0) {
+    fire.style.opacity = "0";
+  } else if (volume <= 0.5) {
+    fire.style.opacity = `${volume}`;
+  } else if (volume > 0.5 && volume <= 0.6) {
+    let mapped = (volume - 0.5) * 10;
+    fire.style.opacity = `${0.5 + mapped * 0.5}`;
+  } else {
+    fire.style.opacity = "1";
+  }
+}
+
 // Clique na guitarra
 guitarra.addEventListener("click", () => {
   if (som.paused) {
@@ -39,19 +54,17 @@ guitarra.addEventListener("click", () => {
     showIcon(playIcon);
     playEffect(block1);
 
-    // Fogo aparece gradualmente
     fire.style.transition = "opacity 0.6s ease-in";
-    fire.style.opacity = "1";
+    updateFire(som.volume);
   } else {
     som.pause();
     showIcon(pauseIcon);
     playEffect(block2);
 
-    // Fogo desaparece instantaneamente
     fire.style.transition = "none";
     fire.style.opacity = "0";
     setTimeout(() => {
-      fire.style.transition = "opacity 0.6s ease-in"; // restaura transição
+      fire.style.transition = "opacity 0.6s ease-in";
     }, 10);
   }
 });
@@ -62,29 +75,54 @@ amp.addEventListener("click", () => {
     playEffect(block1);
     ampOn.style.opacity = "1";
     setTimeout(() => ampOn.style.opacity = "0", 300);
-    ampBar.style.display = "block";
+    ampControl.style.display = "flex";
   } else {
     playEffect(block2);
     ampOff.style.opacity = "1";
     setTimeout(() => ampOff.style.opacity = "0", 300);
-    ampBar.style.display = "none";
+    ampControl.style.display = "none";
   }
   ampToggle = !ampToggle;
 });
 
-// Drag do slider para controlar volume
-let dragging = false;
+// Inicializa volume no carregamento da página
+window.addEventListener("load", () => {
+  ampSlider.style.left = `0px`;
+  som.volume = 0;
+  fire.style.opacity = "0";
+});
 
-ampSlider.addEventListener("mousedown", () => dragging = true);
-document.addEventListener("mouseup", () => dragging = false);
-document.addEventListener("mousemove", e => {
-  if (!dragging) return;
-
+// Clique na barra de volume para definir posição e volume
+ampBar.addEventListener("click", e => {
   const rect = ampBar.getBoundingClientRect();
-  let pos = e.clientX - rect.left;
-  if (pos < 0) pos = 0;
-  if (pos > rect.width) pos = rect.width;
+  const sliderWidth = ampSlider.offsetWidth;
+  const halfSlider = sliderWidth / 2;
 
-  ampSlider.style.left = `${pos}px`;
-  som.volume = pos / rect.width;
+  // Posição do clique relativa à barra
+  let pos = e.clientX - rect.left;
+
+  // Calcula a posição left centralizada no clique
+  let leftPos = pos - halfSlider;
+
+  // Limita para que o slider possa sobressair metade no lado direito
+  leftPos = Math.max(-halfSlider, Math.min(leftPos, rect.width - halfSlider));
+
+  // Atualiza posição da bolinha
+  ampSlider.style.left = `${leftPos}px`;
+
+  // Calcula o percentual baseado na posição do centro da bolinha
+  const centerPos = leftPos + halfSlider;
+  const percent = Math.min(1, centerPos / rect.width);
+
+  // Volume diretamente proporcional (vai de 0 a 1 completo)
+  som.volume = percent;
+
+  // Atualiza fogo conforme volume
+  fire.style.transition = "opacity 0.3s ease-in-out";
+  updateFire(som.volume);
+});
+
+// Impede que imagens sejam arrastadas
+document.querySelectorAll('img').forEach(img => {
+  img.ondragstart = () => false;
 });
