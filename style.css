@@ -117,6 +117,7 @@ body {
   background-color: black;
   border-radius: 5px;
   cursor: pointer;
+  box-shadow: 0 0 12px rgba(0,0,0,0.6); /* sombra em desfoque */
 }
 
 #amp-slider {
@@ -151,6 +152,7 @@ body {
   text-align: center;
 }
 
+/* Barra de progresso da música */
 #progress-bar {
   flex: 1;
   height: 6px;
@@ -158,6 +160,7 @@ body {
   margin: 0 10px;
   border-radius: 3px;
   position: relative;
+  box-shadow: 0 0 12px rgba(0,0,0,0.6); /* sombra em desfoque */
 }
 
 #progress-fill {
@@ -166,6 +169,91 @@ body {
   background-color: lime;
   border-radius: 3px;
   transition: width 0.1s linear;
+}
+
+/* Botão de contraste no canto superior direito */
+#contrast-toggle {
+  position: absolute;
+  top: -200px;
+  right: -480px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+  user-select: none;
+  z-index: 10000;
+}
+
+/* Tema claro alternativo */
+.light-mode {
+  background-color: rgb(230, 230, 230); /* quase branco */
+}
+
+.light-mode #amp-label,
+.light-mode #current-time,
+.light-mode #total-time {
+  color: black; /* texto visível no fundo claro */
+}
+
+
+/* Ícone de engrenagem no canto superior direito (ao lado do contraste) */
+#settings-toggle {
+  position: absolute;
+  top: -200px;
+  right: -530px; /* um pouco mais à esquerda que o contraste */
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+  user-select: none;
+  z-index: 10000;
+}
+
+/* Tela de configurações (inicialmente escondida) */
+#settings-menu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  width: 80%;
+  height: 80%;
+  background: rgba(44, 41, 41, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.7);
+  z-index: 9998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  overflow-y: auto;
+  padding: 20px;
+  font-family: "Tiny5", sans-serif;
+  color: black;
+}
+
+/* Quando ativo */
+#settings-menu.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Fundo escurecido atrás do menu */
+#settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 9997;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#settings-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 img {
