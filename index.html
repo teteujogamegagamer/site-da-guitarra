@@ -7,12 +7,18 @@
   <title>GuitarSound</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="img/guitar logo.png">
+
+  <!-- Fonte Tiny5 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
 </head>
 
 <body>
   <div class="container">
     <!-- Fogo atrás da guitarra -->
-  <img id="fire" src="img/chamas.gif" alt="Fogo">
+    <img id="fire" src="img/chamas.gif" alt="Fogo">
+
     <!-- Amplificador à esquerda -->
     <div class="amp-container">
       <img id="amp" src="img/amplificador marshall.png" alt="Amplificador">
@@ -20,14 +26,17 @@
       <img id="amp-off" src="img/desligado.png" alt="Desligado">
 
       <!-- Barrinha de volume -->
-      <div id="amp-bar">
-        <div id="amp-slider"></div>
+      <div class="amp-control">
+        <span id="amp-label">Vol.</span>
+        <div id="amp-bar">
+          <div id="amp-slider"></div>
+        </div>
       </div>
     </div>
 
     <!-- Guitarra central -->
     <div class="guitar-container">
-      <img id="guitarra" src="img/guitar.png" alt="Guitarra">
+      <img id="guitarra" src="guitars/Stratocaster-PHX-Ciano de teteujoga.png" alt="Guitarra">
       <div id="play-icon">▶</div>
       <div id="pause-icon">⏸</div>
     </div>
