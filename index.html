@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,20 +8,36 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="img/guitar logo.png">
 </head>
+
 <body>
   <div class="container">
-    <img id="guitarra" src="img/guitar.png" alt="Guitarra">
-    <div id="play-icon">▶</div>
-    <div id="pause-icon">⏸</div>
+    <!-- Fogo atrás da guitarra -->
+  <img id="fire" src="img/chamas.gif" alt="Fogo">
+    <!-- Amplificador à esquerda -->
+    <div class="amp-container">
+      <img id="amp" src="img/amplificador marshall.png" alt="Amplificador">
+      <img id="amp-on" src="img/ligado.png" alt="Ligado">
+      <img id="amp-off" src="img/desligado.png" alt="Desligado">
+
+      <!-- Barrinha de volume -->
+      <div id="amp-bar">
+        <div id="amp-slider"></div>
+      </div>
+    </div>
+
+    <!-- Guitarra central -->
+    <div class="guitar-container">
+      <img id="guitarra" src="img/guitar.png" alt="Guitarra">
+      <div id="play-icon">▶</div>
+      <div id="pause-icon">⏸</div>
+    </div>
   </div>
 
-<audio id="som" src="msc/riff guitar.mp3"></audio>
-<audio id="block1" src="msc/block 1.mp3"></audio>
-<audio id="block2" src="msc/block 2.mp3"></audio>
-  </audio>
+  <audio id="som" src="msc/Everlong - Foo Fighters.mp3"></audio>
+  <audio id="block1" src="msc/block 1.mp3"></audio>
+  <audio id="block2" src="msc/block 2.mp3"></audio>
 
   <script src="script.js"></script>
 </body>
-
 
 </html>
